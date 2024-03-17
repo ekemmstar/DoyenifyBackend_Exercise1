@@ -6,4 +6,4 @@ import { SampleController } from './sample.controller';
   controllers: [SampleController],
   
 })
-export class UsersModule {}
+export class sampleModule {}
