@@ -67,6 +67,6 @@ caption {
     letter-spacing: 1px;
   }
 
-  .placeHolder {
-    color: rgb(167, 44, 174);
+  ::placeholder {
+    color: rgb(63, 56, 56);
   }

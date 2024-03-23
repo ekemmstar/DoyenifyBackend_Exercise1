@@ -4,8 +4,7 @@ import './table.css'
 const TableComponent = () => {
 
     const [message, setMessage] = useState([]);
-    let heading = ["id", "name", "age", "course"];
-
+    let heading = ["id", "name", "age", "course"]; 
     
     const fetchData = async () => {
         try {
@@ -41,9 +40,11 @@ const TableComponent = () => {
             console.log('Data posted:', data);
             // After successful post, refetch data to update the table
             fetchData();
+            
         } catch (error) {
             console.error('Error posting data:', error);
         }
+        window.location.reload()
     };
 
     const [values, setValues] = useState({
@@ -81,19 +82,19 @@ const TableComponent = () => {
             <form>
                 <input
                     onChange={onChange}
-                    type="number" name="id" value={values.id} placeholder='id' className='placeHolder'
+                    type="number" name="id" value={values.id} placeholder='id...'
                 />
                 <input
                     onChange={onChange}
-                    type="text" name="name" value={values.name} placeholder='name'
+                    type="text" name="name" value={values.name} placeholder='name...'
                 />
                 <input
                     onChange={onChange}
-                    type="number" name="age" value={values.age} placeholder='age'
+                    type="number" name="age" value={values.age} placeholder='age...'
                 />
                 <input
                     onChange={onChange}
-                    type="text" name="course" value={values.course} placeholder='course'
+                    type="text" name="course" value={values.course} placeholder='course...'
                 />
                 <input type="submit" onClick={handleSubmit}></input>
             </form>
