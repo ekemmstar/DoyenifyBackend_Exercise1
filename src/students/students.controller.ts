@@ -8,14 +8,15 @@ import {
   Param,
 } from '@nestjs/common';
 import { Students } from './students.interface';
-import { StudentsService } from './students.service';
+import { StudentsService } from './services/students.service';
+import { Student } from './entities/student.entity';
 
 @Controller('students')
 export class StudentsController {
   constructor(private readonly studentService: StudentsService) {}
 
   @Get()
-  retrieveStudent(): Students[] {
+  retrieveStudent(): Promise<Student[]> {
     return this.studentService.retrieve();
   }
 
@@ -25,12 +26,15 @@ export class StudentsController {
   }
 
   @Put(':id')
-  updateStudent(@Param('id') id: number, @Body() student: Students): Students {
+  updateStudent(
+    @Param('id') id: number,
+    @Body() student: Students,
+  ): Promise<Student> {
     return this.studentService.update(id, student);
   }
 
-  @Delete()
-  deleteStudent(): string[] {
-    return this.studentService.delete();
+  @Delete(':id')
+  deleteStudent(@Param('id') id: number) {
+    return this.studentService.delete(id);
   }
 }
