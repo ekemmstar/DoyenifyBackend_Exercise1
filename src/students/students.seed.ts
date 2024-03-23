@@ -21,4 +21,10 @@ export const students: Students[] = [
     age: 22,
     course: 'UI/UX',
   },
+  {
+    id: 4,
+    name: 'Sola',
+    age: 22,
+    course: 'Nest JS',
+  },
 ];

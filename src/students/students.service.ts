@@ -11,7 +11,7 @@ export class StudentsService {
   }
   update(id: number, student: Students): Students {
     console.log(id);
-    const studentIndex = this.students.findIndex(s => s.id === id);
+    const studentIndex = this.students.findIndex((s) => s.id === id);
     console.log(studentIndex);
 
     this.students[studentIndex] = student;
@@ -26,3 +26,5 @@ export class StudentsService {
     this.students.push(student);
   }
 }
+
+// STUDENTS((student) => student.id === inputID);
