@@ -1,30 +1,40 @@
-import { Controller , Get, Post, Put, Delete, Body} from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Put,
+  Delete,
+  Body,
+  Param,
+} from '@nestjs/common';
 import { Students } from './students.interface';
-import { StudentsService } from './students.service';
-
+import { StudentsService } from './services/students.service';
+import { Student } from './entities/student.entity';
 
 @Controller('students')
 export class StudentsController {
-constructor(private readonly studentService: StudentsService) {}
-
+  constructor(private readonly studentService: StudentsService) {}
 
   @Get()
-  retrieveStudent(): Students [] {
+  retrieveStudent(): Promise<Student[]> {
     return this.studentService.retrieve();
   }
 
   @Post()
-  createStudent(@Body() student : Students) {  
+  createStudent(@Body() student: Students) {
     this.studentService.create(student);
   }
-  
-  @Put()
-  updateStudent(): string[] {
-    return this.studentService.update();
+
+  @Put(':id')
+  updateStudent(
+    @Param('id') id: number,
+    @Body() student: Students,
+  ): Promise<Student> {
+    return this.studentService.update(id, student);
   }
-  
-  @Delete()
-  deleteStudent(): string[] {
-    return this.studentService.delete();
+
+  @Delete(':id')
+  deleteStudent(@Param('id') id: number) {
+    return this.studentService.delete(id);
   }
 }
