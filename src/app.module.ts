@@ -6,6 +6,8 @@ import { DeckController } from './deck.controller';
 import { DeckService } from './deck.service';
 import { StudentsModule } from './students/students.module';
 import { Student } from './students/entities/student.entity';
+import { CoursesModule } from './courses/course.module';
+import { Course } from './courses/entities/course.entity';
 
 @Module({
   imports: [
@@ -16,10 +18,11 @@ import { Student } from './students/entities/student.entity';
       username: 'postgres',
       password: 'postgres',
       database: 'postgres',
-      entities: [Student],
+      entities: [Student, Course],
       synchronize: true,
     }),
     StudentsModule,
+    CoursesModule,
   ],
   controllers: [AppController, DeckController],
   providers: [AppService, DeckService],

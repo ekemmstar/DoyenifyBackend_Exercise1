@@ -1,16 +1,15 @@
-import { useState, useEffect } from 'react';
-import './table.css'
+import React, {useEffect, useState} from 'react'
 
-const TableComponent = () => {
+const Courses = () => {
 
-    const [message, setMessage] = useState([]);
-    let heading = ["id", "name", "age", "course"]; 
+    const [course, setCourse] = useState([]);
+    let heading = ["id", "symbol", "Register"]; 
     
     const fetchData = async () => {
         try {
-            const response = await fetch('http://localhost:3000/students');
+            const response = await fetch('http://localhost:3000/courses');
             const data = await response.json();
-            setMessage(data);
+            setCourse(data);
             console.log(data);
         } catch (error) {
             console.error('Error fetching data:', error);
@@ -21,10 +20,9 @@ const TableComponent = () => {
         fetchData();
     }, []);
 
-
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if(!values.id || !values.age || !values.name) {
+        if(!values.id || !values.symbol) {
             alert ("please fill all required values")
             return;
         }
@@ -49,17 +47,16 @@ const TableComponent = () => {
 
     const [values, setValues] = useState({
         id: '',
-        name: '',
-        age: '',
-        course: '',
+        symbol: '',
     })
 
     const onChange = (e) => {
         setValues({ ...values, [e.target.name]: e.target.value });
     };
-    return (
-        <div className='fullPg'>
-            <table >
+
+  return (
+    <div>
+        <table >
                 <thead >
                     <tr>
                         {heading.map((head, headID) => (
@@ -68,41 +65,18 @@ const TableComponent = () => {
                     </tr>
                 </thead>
                 <tbody>
-                    {message.map((item, index) => (
+                    {course.map((item, index) => (
                         <tr className="tRow" key={index}>
                             <td className="tCol">{item.id}</td>
                             <td className="tCol">{item.name}</td>
-                            <td className="tCol">{item.age}</td>
-                            <td className="tCol">{item.course}</td>
+                            <td className="tCol">{item.symbol}</td>
                         </tr>
                     ))}
 
                 </tbody>
             </table>
-            <form>
-                <input
-                    onChange={onChange}
-                    type="number" name="id" value={values.id} placeholder='id...'
-                />
-                <input
-                    onChange={onChange}
-                    type="text" name="name" value={values.name} placeholder='name...'
-                />
-                <input
-                    onChange={onChange}
-                    type="number" name="age" value={values.age} placeholder='age...'
-                />
-                <input
-                    onChange={onChange}
-                    type="text" name="course" value={values.course} placeholder='course...'
-                />
-                <input type="submit" onClick={handleSubmit}></input>
-            </form>
-        </div>
-
-
-
-    )
+    </div>
+  )
 }
 
-export default TableComponent;
+export default Courses
