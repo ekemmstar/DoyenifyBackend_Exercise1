@@ -1,108 +1,83 @@
-import { useState, useEffect } from 'react';
-import './table.css'
+import React, { useEffect, useState } from 'react';
+import type { TableProps } from 'antd';
+import { Table } from 'antd';
+import qs from 'qs';
+import { TableParams } from './TableParams';
+import { columns } from './columns';
 
-const TableComponent = () => {
 
-    const [message, setMessage] = useState([]);
-    let heading = ["id", "name", "age", "course"]; 
+
+const TableComponent: React.FC = () => {
+  const [data, setData] = useState();
+  const [loading, setLoading] = useState(false);
+  const [tableParams, setTableParams] = useState<TableParams>({
+    pagination: {
+      current: 1,
+      pageSize: 10,
+    },
+  });
+
+  //const [message, setMessage] = useState([]);
+    
     
     const fetchData = async () => {
+
         try {
             const response = await fetch('http://localhost:3000/students');
             const data = await response.json();
-            setMessage(data);
-            console.log(data);
+            setData(data);
+            setLoading(false);
+        setTableParams({
+          ...tableParams,
+          pagination: {
+            ...tableParams.pagination,
+            total: 200,
+            // 200 is mock data, you should read it from server
+            // total: data.totalCount,
+          },
+        });
+            console.log(data.length);
         } catch (error) {
             console.error('Error fetching data:', error);
         }
     };
 
-    useEffect(() => {
-        fetchData();
-    }, []);
+     
 
+  useEffect(() => {
+    fetchData();
+  }, [
+    tableParams.pagination?.current,
+    tableParams.pagination?.pageSize,
+    tableParams?.sortOrder,
+    tableParams?.sortField,
+    JSON.stringify(tableParams.filters),
+  ]);
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        if(!values.id || !values.age || !values.name) {
-            alert ("please fill all required values")
-            return;
-        }
-        try {
-            const response = await fetch('http://localhost:3000/students', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(values),
-            });
-            const data = await response.json();
-            console.log('Data posted:', data);
-            // After successful post, refetch data to update the table
-            fetchData();
-            
-        } catch (error) {
-            console.error('Error posting data:', error);
-        }
-        window.location.reload()
-    };
+  const handleTableChange: TableProps['onChange'] = (pagination, filters, sorter) => {
+    setTableParams({
+      pagination,
+      filters,
+      sortOrder: Array.isArray(sorter) ? undefined : sorter.order,
+      sortField: Array.isArray(sorter) ? undefined : sorter.field,
+    });
 
-    const [values, setValues] = useState({
-        id: '',
-        name: '',
-        age: '',
-        course: '',
-    })
+    // `dataSource` is useless since `pageSize` changed
+    if (pagination.pageSize !== tableParams.pagination?.pageSize) {
+      setData([]);
+    }
+  };
 
-    const onChange = (e) => {
-        setValues({ ...values, [e.target.name]: e.target.value });
-    };
-    return (
-        <div className='fullPg'>
-            <table >
-                <thead >
-                    <tr>
-                        {heading.map((head, headID) => (
-                            <th key={headID}>{head}</th>
-                        ))}
-                    </tr>
-                </thead>
-                <tbody>
-                    {message.map((item, index) => (
-                        <tr className="tRow" key={index}>
-                            <td className="tCol">{item.id}</td>
-                            <td className="tCol">{item.name}</td>
-                            <td className="tCol">{item.age}</td>
-                            <td className="tCol">{item.course}</td>
-                        </tr>
-                    ))}
-
-                </tbody>
-            </table>
-            <form>
-                <input
-                    onChange={onChange}
-                    type="number" name="id" value={values.id} placeholder='id...'
-                />
-                <input
-                    onChange={onChange}
-                    type="text" name="name" value={values.name} placeholder='name...'
-                />
-                <input
-                    onChange={onChange}
-                    type="number" name="age" value={values.age} placeholder='age...'
-                />
-                <input
-                    onChange={onChange}
-                    type="text" name="course" value={values.course} placeholder='course...'
-                />
-                <input type="submit" onClick={handleSubmit}></input>
-            </form>
-        </div>
-
-
-
-    )
-}
+  return (
+    <Table
+      columns={columns}
+      rowKey={(record) => record.login.uuid}
+      dataSource={data}
+      pagination={tableParams.pagination}
+      loading={loading}
+      onChange={handleTableChange}
+    />
+  );
+};
 
 export default TableComponent;
